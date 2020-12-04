@@ -3,6 +3,9 @@
 # to create a "native" platform experience, using as few cross-platform
 # helper tools as possible.
 #
+# On Linux/Mac a virtualenv is used for testing. The effective virtual env
+# is available under ~/VENV.
+#
 # All workers support remote login. Login details are shown at the top of each
 # CI run log.
 #
@@ -50,27 +53,29 @@ environment:
   # The ID variable had no impact, but sorts first in the CI run overview
   # an intelligible name can help to locate a specific test run
   matrix:
-    # Windows core tests
-    - ID: WIN38core
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      # Python version specification is non-standard on windows
-      PY: 38-x64
-      DTS: datalad.core
-    # Windows tests that should run but may fail
-    - ID: WIN38plugin
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PY: 38-x64
-      DTS: datalad.plugin
-      KNOWN2FAIL: 1
+    ## Windows core tests
+    #- ID: WinP38core
+    #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    #  # Python version specification is non-standard on windows
+    #  PY: 38-x64
+    #  DTS: datalad.core
+    ## Windows tests that should run but may fail
+    #- ID: WinP38plugin
+    #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    #  PY: 38-x64
+    #  DTS: datalad.plugin
+    #  KNOWN2FAIL: 1
     # Ubuntu core tests
-    - ID: UBU18core
-      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    - ID: Ubu20core
+      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
       DTS: datalad.core
+      INSTALL_SYSPKGS: python3-virtualenv git-annex
     # MacOS core tests
-    - ID: MAC38core
+    - ID: MacP38core
       APPVEYOR_BUILD_WORKER_IMAGE: macOS
       PY: 3.8
       DTS: datalad.core
+      INSTALL_SYSPKGS: git-annex
 
 
 matrix:
@@ -108,6 +113,8 @@ init:
   # enable RDP access on windows (RDP password is in appveyor project config)
   # this is relatively expensive (1-2min), but very convenient to jump into any build at any time
   - cmd: powershell.exe iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  # Missing software
+  - sh: "[ -n \"$INSTALL_SYSPKGS\" ] && ( [ \"x${APPVEYOR_BUILD_WORKER_IMAGE}\" = \"xmacOS\" ] && brew install -q ${INSTALL_SYSPKGS} || sudo apt-get install --no-install-recommends -y ${INSTALL_SYSPKGS} ) || true"
   # Identity setup
   - git config --global user.email "test@appveyor.land"
   - git config --global user.name "Appveyor Almighty"
@@ -115,7 +122,9 @@ init:
   # appveyor provided environments/installation). Note, these are broken
   # on the ubuntu images
   # https://help.appveyor.com/discussions/problems/28217-appveyor-ubunu-image-with-python3-lzma-module
-  - sh: "[ \"x$PY\" != x ] && . ${HOME}/venv${PY}/bin/activate || true"
+  # Otherwise create a virtualenv using the default Python 3, to enable uniform
+  # use of python/pip executables below
+  - sh: "[ \"x$PY\" != x ] && . ${HOME}/venv${PY}/bin/activate || virtualenv -p 3 ${HOME}/dlvenv && . ${HOME}/dlvenv/bin/activate; ln -s \"$VIRTUAL_ENV\" \"${HOME}/VENV\""
   - cmd: "set PATH=C:\\Python%PY%;C:\\Python%PY%\\Scripts;%PATH%"
   # Scratch space
   - cmd: md C:\TMP
@@ -135,9 +144,8 @@ install:
   # needs APPVEYOR_SSH_KEY defined in project settings (or environment)
   - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
   - sh: sh tools/ci/appveyor_ssh2localhost.sh
-  # Install git-annex
+  # Install git-annex on windows, otherwise INSTALL_SYSPKGS can be used
   - cmd: tools\ci\appveyor_install_git-annex.bat
-  - sh: "[ \"x${APPVEYOR_BUILD_WORKER_IMAGE}\" = \"xmacOS\" ] && brew install -q git-annex || sudo apt-get install -y git-annex"
 
 
 #before_build:
