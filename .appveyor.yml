@@ -64,7 +64,8 @@ environment:
       KNOWN2FAIL: 1
     # Ubuntu core tests
     - ID: LNX38core
-      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
+      #APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
+      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
       PY: 3.8
       DTS: datalad.core
     # MacOS core tests
