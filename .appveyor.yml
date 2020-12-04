@@ -47,23 +47,29 @@ environment:
 
   # Do not use `image` as a matrix dimension, to have fine-grained control over
   # what tests run on which platform
+  # The ID variable had no impact, but sorts first in the CI run overview
+  # an intelligible name can help to locate a specific test run
   matrix:
     # Windows core tests
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - ID: WIN38core
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       # Python version specification is non-standard on windows
       PY: 38-x64
       DTS: datalad.core
     # Windows tests that should run but may fail
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - ID: WIN38plugin
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PY: 38-x64
       DTS: datalad.plugin
       KNOWN2FAIL: 1
     # Ubuntu core tests
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
+    - ID: LNX38core
+      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
       PY: 3.8
       DTS: datalad.core
     # MacOS core tests
-    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+    - ID: MAC38core
+      APPVEYOR_BUILD_WORKER_IMAGE: macOS
       PY: 3.8
       DTS: datalad.core
 
