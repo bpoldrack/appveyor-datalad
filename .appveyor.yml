@@ -153,8 +153,8 @@ install:
 
 
 build_script:
-  # TODO: eventually install datalad from repo itself
-  - pip install datalad nose coverage
+  - pip install nose coverage
+  - pip install git+https://github.com/datalad/datalad.git@master
 
 
 #after_build:
