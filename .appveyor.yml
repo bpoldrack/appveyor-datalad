@@ -63,10 +63,8 @@ environment:
       DTS: datalad.plugin
       KNOWN2FAIL: 1
     # Ubuntu core tests
-    - ID: LNX38core
-      #APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
+    - ID: UBU18core
       APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
-      PY: 3.8
       DTS: datalad.core
     # MacOS core tests
     - ID: MAC38core
@@ -113,8 +111,11 @@ init:
   # Identity setup
   - git config --global user.email "test@appveyor.land"
   - git config --global user.name "Appveyor Almighty"
-  # Python env setup (using the appveyor provided environments/installation)
-  - sh: . ${HOME}/venv${PY}/bin/activate
+  # If a particular Python version is requested, use env setup (using the
+  # appveyor provided environments/installation). Note, these are broken
+  # on the ubuntu images
+  # https://help.appveyor.com/discussions/problems/28217-appveyor-ubunu-image-with-python3-lzma-module
+  - sh: "[ \"x$PY\" != x ] && . ${HOME}/venv${PY}/bin/activate || true"
   - cmd: "set PATH=C:\\Python%PY%;C:\\Python%PY%\\Scripts;%PATH%"
   # Scratch space
   - cmd: md C:\TMP
