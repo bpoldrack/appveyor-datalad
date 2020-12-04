@@ -119,7 +119,8 @@ init:
 
 install:
   # enable developer mode on windows
-  - cmd: powershell tools\ci\appveyor_enable_windevmode.ps1
+  # this should enable mklink without admin privileges, but it doesn't seem to work
+  #- cmd: powershell tools\ci\appveyor_enable_windevmode.ps1
   # deploy standard SSH config for localhost access on Windows
   - cmd: tools\ci\appveyor_ssh2localhost.bat
   # enable external SSH access to CI worker on all other systems
