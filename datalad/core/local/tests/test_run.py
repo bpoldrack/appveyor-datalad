@@ -68,7 +68,7 @@ from datalad.tests.utils import (
     swallow_logs,
     swallow_outputs,
     with_tempfile,
-    with_testrepos,
+    with_testdatasets,
     with_tree,
 )
 
@@ -276,13 +276,9 @@ def test_run_from_subds_gh3551(path):
         ok_(subds.repo.file_has_content("f"))
 
 
-# unexpected content of state "modified", likely a more fundamental issue with the
-# testrepo setup
-@known_failure_githubci_win
-@with_testrepos('basic_annex', flavors=['clone'])
+@with_testdatasets(access='path')
 def test_run_explicit(path):
     ds = Dataset(path)
-
     assert_false(ds.repo.file_has_content("test-annex.dat"))
 
     create_tree(ds.path, {"dirt_untracked": "untracked",
