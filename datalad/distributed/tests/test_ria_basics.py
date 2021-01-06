@@ -24,6 +24,7 @@ from datalad.tests.utils import (
     has_symlink_capability,
     SkipTest,
     known_failure_windows,
+    skip_annex_getconfig_bug,
     skip_if_no_network,
     skip_ssh,
     slow,
@@ -57,6 +58,7 @@ from datalad.cmd import (
 # Note, that exceptions to test for are generally CommandError since we are
 # talking to the special remote via annex.
 
+@skip_annex_getconfig_bug
 @known_failure_windows  # see gh-4469
 @with_tempfile
 @with_tempfile
@@ -160,6 +162,7 @@ def test_initremote_basic():
     yield _test_initremote_basic, None
 
 
+@skip_annex_getconfig_bug
 @known_failure_windows  # see gh-4469
 @with_tempfile
 @with_tempfile
@@ -216,6 +219,7 @@ def test_initremote_rewrite():
     yield _test_initremote_rewrite, None
 
 
+@skip_annex_getconfig_bug
 @known_failure_windows  # see gh-4469
 @with_tempfile
 @with_tempfile
@@ -292,6 +296,7 @@ def test_remote_layout():
     yield _test_remote_layout, None
 
 
+@skip_annex_getconfig_bug
 @known_failure_windows  # see gh-4469
 @with_tempfile
 @with_tempfile
@@ -384,6 +389,7 @@ def test_version_check():
     yield _test_version_check, None
 
 
+@skip_annex_getconfig_bug
 @known_failure_windows  # see gh-4469
 @with_tempfile
 @with_tempfile
@@ -448,6 +454,7 @@ def test_gitannex_local():
     _test_gitannex(None)
 
 
+@skip_annex_getconfig_bug
 @known_failure_windows  # see gh-4469
 @with_tempfile
 @with_tempfile
