@@ -58,7 +58,8 @@ environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       # Python version specification is non-standard on windows
       PY: 38-x64
-      DTS: datalad.support.tests.test_gitrepo
+      #DTS: datalad.support.tests.test_gitrepo
+      DTS: datalad.core
     ## Windows tests that should run but may fail
     #- ID: WinP38plugin
     #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
@@ -68,13 +69,15 @@ environment:
     # Ubuntu core tests
     - ID: Ubu20core
       APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
-      DTS: datalad.support.tests.test_gitrepo
+      #DTS: datalad.support.tests.test_gitrepo
+      DTS: datalad.core
       INSTALL_SYSPKGS: python3-virtualenv git-annex
     # MacOS core tests
     - ID: MacP38core
       APPVEYOR_BUILD_WORKER_IMAGE: macOS
       PY: 3.8
-      DTS: datalad.support.tests.test_gitrepo
+      #DTS: datalad.support.tests.test_gitrepo
+      DTS: datalad.core
       INSTALL_SYSPKGS: git-annex
       DATALAD_LOCATIONS_SOCKETS: /Users/appveyor/TMP/sockets
 
